@@ -79,7 +79,7 @@ public class FormLaporanPenjualan extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         btnRefresh = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tableLaporan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

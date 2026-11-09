@@ -59,6 +59,11 @@ public class FormSupplier extends javax.swing.JFrame {
         txtAlamat.setText("");
         txtIdSupplier.setEnabled(true);
     }
+    
+    private String ambil(int row, int col) {
+    Object o = tableSupplier.getValueAt(row, col);
+    return o == null ? "" : o.toString();
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -85,7 +90,7 @@ public class FormSupplier extends javax.swing.JFrame {
         btnHapus = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("ID Supplier");
 
@@ -266,12 +271,13 @@ public class FormSupplier extends javax.swing.JFrame {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void tableSupplierMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableSupplierMouseClicked
-      int row = tableSupplier.getSelectedRow();
-txtIdSupplier.setText(tableSupplier.getValueAt(row, 0).toString());
-txtNamaSupplier.setText(tableSupplier.getValueAt(row, 1).toString());
-txtTelepon.setText(tableSupplier.getValueAt(row, 2).toString());
-txtAlamat.setText(tableSupplier.getValueAt(row, 3).toString());
-txtIdSupplier.setEnabled(false);          // TODO add your handling code here:
+    int row = tableSupplier.getSelectedRow();
+if (row < 0) return;
+txtIdSupplier.setText(ambil(row, 0));
+txtNamaSupplier.setText(ambil(row, 1));
+txtTelepon.setText(ambil(row, 2));
+txtAlamat.setText(ambil(row, 3));
+txtIdSupplier.setEnabled(false);
     }//GEN-LAST:event_tableSupplierMouseClicked
 
     /**

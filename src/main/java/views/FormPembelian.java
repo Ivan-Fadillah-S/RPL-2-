@@ -76,13 +76,15 @@ public class FormPembelian extends javax.swing.JFrame {
         btnSimpan = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("No. Faktur");
 
         jLabel2.setText("ID Supplier");
 
         jLabel3.setText("ID Barang");
+
+        txtIdBarang.addActionListener(this::txtIdBarangActionPerformed);
 
         jLabel4.setText("Nama Barang");
 
@@ -238,62 +240,80 @@ public class FormPembelian extends javax.swing.JFrame {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
-        try {
-            Connection conn = Koneksi.getConnection();
-            conn.setAutoCommit(false); // Transaksi aman
+         if (modelKeranjangBeli.getRowCount() == 0) {
+    JOptionPane.showMessageDialog(this, "Keranjang masih kosong!");
+    return;
+}
+if (txtNoFakturBeli.getText().trim().isEmpty() || txtIdSupplier.getText().trim().isEmpty()) {
+    JOptionPane.showMessageDialog(this, "No. Faktur dan ID Supplier wajib diisi!");
+    return;
+}
+Connection conn = null;
+try {
+    conn = Koneksi.getConnection();
+    conn.setAutoCommit(false);
+    String noFaktur = txtNoFakturBeli.getText().trim();
+    int totalBayar = Integer.parseInt(lblTotalBeli.getText().replace("Rp ", "").trim());
 
-            // Simpan ke tabel pembelian (sesuai struktur database kamu)[cite: 2]
-            String sqlPembelian = "INSERT INTO pembelian (no_faktur_beli, tanggal, id_supplier, id_user, total_bayar) VALUES (?, NOW(), ?, ?, ?)";
-            PreparedStatement psPembelian = conn.prepareStatement(sqlPembelian);
-            
-            psPembelian.setString(1, txtNoFakturBeli.getText());
-            psPembelian.setInt(2, Integer.parseInt(txtIdSupplier.getText()));
-            psPembelian.setInt(3, 1); // ID User aktif
-            
-            int totalBayar = Integer.parseInt(lblTotalBeli.getText().replace("Rp ", ""));
-            psPembelian.setInt(4, totalBayar);
-            psPembelian.executeUpdate();
+    PreparedStatement psPembelian = conn.prepareStatement(
+        "INSERT INTO pembelian (no_faktur_beli, tanggal, id_supplier, id_user, total_bayar) VALUES (?, NOW(), ?, ?, ?)");
+    psPembelian.setString(1, noFaktur);
+    psPembelian.setInt(2, Integer.parseInt(txtIdSupplier.getText().trim()));
+    psPembelian.setInt(3, config.Session.idUser);
+    psPembelian.setInt(4, totalBayar);
+    psPembelian.executeUpdate();
 
-            // Simpan detail pembelian & TAMBAHKAN STOK ke tabel goods/barang
-            int baris = tableKeranjangBeli.getRowCount();
-            for (int i = 0; i < baris; i++) {
-                String noFaktur = txtNoFakturBeli.getText();
-                String idGoods = tableKeranjangBeli.getValueAt(i, 0).toString();
-                int hargaBeli = Integer.parseInt(tableKeranjangBeli.getValueAt(i, 2).toString());
-                int qty = Integer.parseInt(tableKeranjangBeli.getValueAt(i, 3).toString());
-                int subtotal = Integer.parseInt(tableKeranjangBeli.getValueAt(i, 4).toString());
+    for (int i = 0; i < tableKeranjangBeli.getRowCount(); i++) {
+        String kode = tableKeranjangBeli.getValueAt(i, 0).toString();
+        int qty = Integer.parseInt(tableKeranjangBeli.getValueAt(i, 3).toString());
+        int subtotal = Integer.parseInt(tableKeranjangBeli.getValueAt(i, 4).toString());
 
-                // Simpan ke detail_pembelian
-                String sqlDetail = "INSERT INTO detail_pembelian (no_faktur_beli, id_goods, harga, qty, subtotal) VALUES (?, ?, ?, ?, ?)";
-                PreparedStatement psDetail = conn.prepareStatement(sqlDetail);
-                psDetail.setString(1, noFaktur);
-                psDetail.setString(2, idGoods);
-                psDetail.setInt(3, hargaBeli);
-                psDetail.setInt(4, qty);
-                psDetail.setInt(5, subtotal);
-                psDetail.executeUpdate();
+        PreparedStatement psDetail = conn.prepareStatement(
+            "INSERT INTO detail_pembelian (no_faktur_beli, kode_barang, jumlah, harga_subtotal) VALUES (?, ?, ?, ?)");
+        psDetail.setString(1, noFaktur);
+        psDetail.setString(2, kode);
+        psDetail.setInt(3, qty);
+        psDetail.setInt(4, subtotal);
+        psDetail.executeUpdate();
 
-                // TAMBAH STOK di tabel goods secara real-time (karena ini pembelian/restock)
-                String sqlUpdateStok = "UPDATE goods SET stock = stock + ? WHERE id_goods = ?";
-                PreparedStatement psStok = conn.prepareStatement(sqlUpdateStok);
-                psStok.setInt(1, qty);
-                psStok.setString(2, idGoods);
-                psStok.executeUpdate();
-            }
-
-            conn.commit();
-            JOptionPane.showMessageDialog(this, "Transaksi Pembelian Berhasil & Stok Barang Berhasil Bertambah!");
-            
-            // Reset form
-            modelKeranjangBeli.setRowCount(0);
-            lblTotalBeli.setText("Rp 0");
-            txtNoFakturBeli.setText("");
-            txtIdSupplier.setText("");
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal Menyimpan Pembelian: " + e.getMessage());
-        }        // TODO add your handling code here:
+        PreparedStatement psStok = conn.prepareStatement("UPDATE barang SET stok = stok + ? WHERE kode_barang = ?");
+        psStok.setInt(1, qty);
+        psStok.setString(2, kode);
+        if (psStok.executeUpdate() == 0) {
+            throw new SQLException("Kode barang " + kode + " tidak ada di Data Barang");
+        }
+    }
+    conn.commit();
+    JOptionPane.showMessageDialog(this, "Pembelian berhasil disimpan & stok bertambah!");
+    modelKeranjangBeli.setRowCount(0);
+    lblTotalBeli.setText("Rp 0");
+    txtNoFakturBeli.setText("");
+    txtIdSupplier.setText("");
+} catch (SQLException | NumberFormatException e) {
+    try { if (conn != null) conn.rollback(); } catch (SQLException ex) { }
+    JOptionPane.showMessageDialog(this, "Gagal Menyimpan Pembelian: " + e.getMessage());
+} finally {
+    try { if (conn != null) conn.setAutoCommit(true); } catch (SQLException ex) { }
+}
     }//GEN-LAST:event_btnSimpanActionPerformed
+
+    private void txtIdBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdBarangActionPerformed
+        try {
+    Connection conn = Koneksi.getConnection();
+    PreparedStatement ps = conn.prepareStatement("SELECT nama_barang, harga_beli FROM barang WHERE kode_barang = ?");
+    ps.setString(1, txtIdBarang.getText().trim());
+    java.sql.ResultSet rs = ps.executeQuery();
+    if (rs.next()) {
+        txtNamaBarang.setText(rs.getString("nama_barang"));
+        txtHargaBeli.setText(String.valueOf((int) rs.getDouble("harga_beli")));
+        txtJumlah.requestFocus();
+    } else {
+        JOptionPane.showMessageDialog(this, "Kode barang tidak ditemukan!");
+    }
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+}
+    }//GEN-LAST:event_txtIdBarangActionPerformed
 
     /**
      * @param args the command line arguments

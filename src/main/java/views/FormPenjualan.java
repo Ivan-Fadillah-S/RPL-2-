@@ -84,7 +84,7 @@ public class FormPenjualan extends javax.swing.JFrame {
         btnSimpan = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("No Faktur");
 
@@ -249,100 +249,135 @@ public class FormPenjualan extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtIdBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdBarangActionPerformed
-        // TODO add your handling code here:
+        try {
+    Connection conn = Koneksi.getConnection();
+    PreparedStatement ps = conn.prepareStatement("SELECT nama_barang, harga_jual, stok FROM barang WHERE kode_barang = ?");
+    ps.setString(1, txtIdBarang.getText().trim());
+    java.sql.ResultSet rs = ps.executeQuery();
+    if (rs.next()) {
+        txtNamaBarang.setText(rs.getString("nama_barang"));
+        txtHarga.setText(String.valueOf((int) rs.getDouble("harga_jual")));
+        txtStok.setText(String.valueOf(rs.getInt("stok")));
+        txtJumlah.requestFocus();
+    } else {
+        JOptionPane.showMessageDialog(this, "Kode barang tidak ditemukan!");
+    }
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+}        // TODO add your handling code here:
     }//GEN-LAST:event_txtIdBarangActionPerformed
 
     private void txtJumlahUangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtJumlahUangActionPerformed
-        // TODO add your handling code here:
+        try {
+    int total = Integer.parseInt(lblTotal.getText().replace("Rp ", "").trim());
+    int uang = Integer.parseInt(txtJumlahUang.getText().trim());
+    txtKembalian.setText(String.valueOf(uang - total));
+} catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(this, "Jumlah uang harus angka!");
+}        // TODO add your handling code here:
     }//GEN-LAST:event_txtJumlahUangActionPerformed
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
-        try {
-            Connection conn = Koneksi.getConnection();
-            conn.setAutoCommit(false); // Aktifkan transaksi database agar aman
+        if (modelKeranjang.getRowCount() == 0) {
+    JOptionPane.showMessageDialog(this, "Keranjang masih kosong!");
+    return;
+}
+if (txtNoFaktur.getText().trim().isEmpty()) {
+    JOptionPane.showMessageDialog(this, "No. Faktur wajib diisi!");
+    return;
+}
+Connection conn = null;
+try {
+    int totalBayar = Integer.parseInt(lblTotal.getText().replace("Rp ", "").trim());
+    int jumlahUang = Integer.parseInt(txtJumlahUang.getText().trim());
+    if (jumlahUang < totalBayar) {
+        JOptionPane.showMessageDialog(this, "Uang pembayaran kurang!");
+        return;
+    }
+    int kembalian = jumlahUang - totalBayar;
 
-            // Simpan ke tabel penjualan (sesuai kolom database kamu)
-            String sqlPenjualan = "INSERT INTO penjualan (no_faktur_jual, tanggal, id_pelanggan, id_user, total_bayar, jumlah_uang, kembalian) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
-            PreparedStatement psPenjualan = conn.prepareStatement(sqlPenjualan);
-            
-            psPenjualan.setString(1, txtNoFaktur.getText());
-            psPenjualan.setInt(2, Integer.parseInt(txtIdPelanggan.getText()));
-            psPenjualan.setInt(3, 1); // ID User aktif (bisa disesuaikan dengan user yang login)
-            
-            int totalBayar = Integer.parseInt(lblTotal.getText().replace("Rp ", ""));
-            int jumlahUang = Integer.parseInt(txtJumlahUang.getText());
-            int kembalian = Integer.parseInt(txtKembalian.getText());
-            
-            psPenjualan.setInt(4, totalBayar);
-            psPenjualan.setInt(5, jumlahUang);
-            psPenjualan.setInt(6, kembalian);
-            psPenjualan.executeUpdate();
+    conn = Koneksi.getConnection();
+    conn.setAutoCommit(false);
+    String noFaktur = txtNoFaktur.getText().trim();
 
-            // Simpan detail penjualan & kurangi stok barang secara real-time
-            int baris = tableKeranjang.getRowCount();
-            for (int i = 0; i < baris; i++) {
-                String noFaktur = txtNoFaktur.getText();
-                String idGoods = tableKeranjang.getValueAt(i, 0).toString();
-                int harga = Integer.parseInt(tableKeranjang.getValueAt(i, 2).toString());
-                int qty = Integer.parseInt(tableKeranjang.getValueAt(i, 3).toString());
-                int subtotal = Integer.parseInt(tableKeranjang.getValueAt(i, 4).toString());
+    PreparedStatement psPenjualan = conn.prepareStatement(
+        "INSERT INTO penjualan (no_faktur_jual, tanggal, id_pelanggan, id_user, total_bayar, jumlah_uang, kembalian) VALUES (?, NOW(), ?, ?, ?, ?, ?)");
+    psPenjualan.setString(1, noFaktur);
+    String idPel = txtIdPelanggan.getText().trim();
+    if (idPel.isEmpty()) {
+        psPenjualan.setNull(2, java.sql.Types.INTEGER); // pelanggan umum
+    } else {
+        psPenjualan.setInt(2, Integer.parseInt(idPel));
+    }
+    psPenjualan.setInt(3, config.Session.idUser);
+    psPenjualan.setInt(4, totalBayar);
+    psPenjualan.setInt(5, jumlahUang);
+    psPenjualan.setInt(6, kembalian);
+    psPenjualan.executeUpdate();
 
-                // Simpan ke tabel detail_penjualan
-                String sqlDetail = "INSERT INTO detail_penjualan (no_faktur_jual, id_goods, harga, qty, subtotal) VALUES (?, ?, ?, ?, ?)";
-                PreparedStatement psDetail = conn.prepareStatement(sqlDetail);
-                psDetail.setString(1, noFaktur);
-                psDetail.setString(2, idGoods);
-                psDetail.setInt(3, harga);
-                psDetail.setInt(4, qty);
-                psDetail.setInt(5, subtotal);
-                psDetail.executeUpdate();
+    for (int i = 0; i < tableKeranjang.getRowCount(); i++) {
+        String kode = tableKeranjang.getValueAt(i, 0).toString();
+        int qty = Integer.parseInt(tableKeranjang.getValueAt(i, 3).toString());
+        int subtotal = Integer.parseInt(tableKeranjang.getValueAt(i, 4).toString());
 
-                // Kurangi stok di tabel goods/barang secara real-time
-                String sqlUpdateStok = "UPDATE goods SET stock = stock - ? WHERE id_goods = ?";
-                PreparedStatement psStok = conn.prepareStatement(sqlUpdateStok);
-                psStok.setInt(1, qty);
-                psStok.setString(2, idGoods);
-                psStok.executeUpdate();
-            }
+        PreparedStatement psDetail = conn.prepareStatement(
+            "INSERT INTO detail_penjualan (no_faktur_jual, kode_barang, jumlah, harga_subtotal) VALUES (?, ?, ?, ?)");
+        psDetail.setString(1, noFaktur);
+        psDetail.setString(2, kode);
+        psDetail.setInt(3, qty);
+        psDetail.setInt(4, subtotal);
+        psDetail.executeUpdate();
 
-            conn.commit(); // Eksekusi permanen ke database
-            JOptionPane.showMessageDialog(this, "Transaksi Penjualan Berhasil Disimpan & Stok Berhasil Diperbarui!");
-            
-            // Reset form setelah transaksi sukses
-            modelKeranjang.setRowCount(0);
-            lblTotal.setText("Rp 0");
-            txtNoFaktur.setText("");
-            txtIdPelanggan.setText("");
-            txtJumlahUang.setText("");
-            txtKembalian.setText("");
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal Menyimpan Transaksi: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Pastikan nominal uang pembayaran terisi dengan benar!");
-        }        // TODO add your handling code here:
+        PreparedStatement psStok = conn.prepareStatement(
+            "UPDATE barang SET stok = stok - ? WHERE kode_barang = ? AND stok >= ?");
+        psStok.setInt(1, qty);
+        psStok.setString(2, kode);
+        psStok.setInt(3, qty);
+        if (psStok.executeUpdate() == 0) {
+            throw new SQLException("Stok barang " + kode + " tidak mencukupi!");
+        }
+    }
+    conn.commit();
+    JOptionPane.showMessageDialog(this, "Transaksi berhasil! Kembalian: Rp " + kembalian);
+    modelKeranjang.setRowCount(0);
+    lblTotal.setText("Rp 0");
+    txtNoFaktur.setText("");
+    txtIdPelanggan.setText("");
+    txtJumlahUang.setText("");
+    txtKembalian.setText("");
+} catch (SQLException | NumberFormatException e) {
+    try { if (conn != null) conn.rollback(); } catch (SQLException ex) { }
+    JOptionPane.showMessageDialog(this, "Gagal Menyimpan Transaksi: " + e.getMessage());
+} finally {
+    try { if (conn != null) conn.setAutoCommit(true); } catch (SQLException ex) { }
+}
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
         try {
-            String idBarang = txtIdBarang.getText();
-            String namaBarang = txtNamaBarang.getText();
-            int harga = Integer.parseInt(txtHarga.getText());
-            int qty = Integer.parseInt(txtJumlah.getText());
-            int subtotal = harga * qty;
-
-            modelKeranjang.addRow(new Object[]{idBarang, namaBarang, harga, qty, subtotal});
-            hitungTotal();
-            
-            // Bersihkan input barang setelah masuk keranjang
-            txtIdBarang.setText("");
-            txtNamaBarang.setText("");
-            txtHarga.setText("");
-            txtStok.setText("");
-            txtJumlah.setText("");
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Pastikan harga dan jumlah (qty) terisi dengan angka yang benar!");
-        }   // TODO add your handling code here:
+    if (txtNamaBarang.getText().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Ketik ID Barang lalu tekan Enter dulu!");
+        return;
+    }
+    String idBarang = txtIdBarang.getText().trim();
+    String namaBarang = txtNamaBarang.getText();
+    int harga = Integer.parseInt(txtHarga.getText().trim());
+    int qty = Integer.parseInt(txtJumlah.getText().trim());
+    int stok = Integer.parseInt(txtStok.getText().trim());
+    if (qty <= 0 || qty > stok) {
+        JOptionPane.showMessageDialog(this, "Jumlah tidak valid. Stok tersedia: " + stok);
+        return;
+    }
+    modelKeranjang.addRow(new Object[]{idBarang, namaBarang, harga, qty, harga * qty});
+    hitungTotal();
+    txtIdBarang.setText("");
+    txtNamaBarang.setText("");
+    txtHarga.setText("");
+    txtStok.setText("");
+    txtJumlah.setText("");
+} catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(this, "Pastikan harga dan jumlah terisi angka yang benar!");
+}
     }//GEN-LAST:event_btnTambahActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed

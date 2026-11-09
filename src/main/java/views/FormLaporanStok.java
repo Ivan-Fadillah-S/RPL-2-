@@ -30,36 +30,39 @@ public class FormLaporanStok extends javax.swing.JFrame {
     }
     
     private void loadDataStok() {
-        modelStok = new DefaultTableModel();
-        modelStok.addColumn("ID Barang");
-        modelStok.addColumn("Nama Barang");
-        modelStok.addColumn("Kategori");
-        modelStok.addColumn("Harga Jual");
-        modelStok.addColumn("Stok Tersedia");
-        
-        tableLaporanStok.setModel(modelStok);
-        modelStok.setRowCount(0);
-
-        try {
-            Connection conn = Koneksi.getConnection();
-            Statement st = conn.createStatement();
-            // Sesuaikan nama tabel 'goods' jika di database kamu bernama 'barang'
-            String sql = "SELECT * FROM barang ORDER BY nama_barang ASC";
-            ResultSet rs = st.executeQuery(sql);
-
-            while (rs.next()) {
-                modelStok.addRow(new Object[]{
-                    rs.getString("id_goods"),
-                    rs.getString("name_goods"),
-                    rs.getString("id_category"), // atau nama kategori
-                    rs.getDouble("price"),
-                    rs.getInt("stock")
-                });
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal memuat laporan stok: " + e.getMessage());
+    modelStok = new DefaultTableModel();
+    modelStok.addColumn("Kode Barang");
+    modelStok.addColumn("Nama Barang");
+    modelStok.addColumn("Kategori");
+    modelStok.addColumn("Harga Jual");
+    modelStok.addColumn("Stok");
+    modelStok.addColumn("Stok Min");
+    modelStok.addColumn("Status");
+    tableLaporanStok.setModel(modelStok);
+    try {
+        Connection conn = Koneksi.getConnection();
+        Statement st = conn.createStatement();
+        String sql = "SELECT b.kode_barang, b.nama_barang, k.nama_kategori, b.harga_jual, b.stok, b.stok_min "
+                   + "FROM barang b LEFT JOIN kategori k ON b.id_kategori = k.id_kategori "
+                   + "ORDER BY b.nama_barang ASC";
+        ResultSet rs = st.executeQuery(sql);
+        while (rs.next()) {
+            int stok = rs.getInt("stok");
+            int min = rs.getInt("stok_min");
+            modelStok.addRow(new Object[]{
+                rs.getString("kode_barang"),
+                rs.getString("nama_barang"),
+                rs.getString("nama_kategori") == null ? "-" : rs.getString("nama_kategori"),
+                rs.getDouble("harga_jual"),
+                stok,
+                min,
+                stok <= min ? "MENIPIS" : "Aman"
+            });
         }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Gagal memuat laporan stok: " + e.getMessage());
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,7 +78,7 @@ public class FormLaporanStok extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         btnRefresh = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tableLaporanStok.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

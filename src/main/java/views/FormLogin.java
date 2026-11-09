@@ -107,6 +107,10 @@ public class FormLogin extends javax.swing.JFrame {
                 int idUser = rs.getInt("id_user");
 
                 javax.swing.JOptionPane.showMessageDialog(this, "Login Berhasil! Selamat datang, " + namaLengkap);
+                
+                config.Session.idUser = idUser;
+                config.Session.role = role;
+                config.Session.namaLengkap = namaLengkap;
 
                 // Membuka Menu Utama dengan membawa data role dan id user
                 new MenuUtama(role, idUser).setVisible(true);

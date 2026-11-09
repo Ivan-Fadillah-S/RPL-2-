@@ -32,5 +32,19 @@
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.1.0</version>
         </dependency>
+        
+                <!-- Spring Context (container / IoC) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+
+        <!-- Spring JDBC (JdbcTemplate + DAO support) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>7.0.0</version>
+        </dependency>
     </dependencies>
 </project>

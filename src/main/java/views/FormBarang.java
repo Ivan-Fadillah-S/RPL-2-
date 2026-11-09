@@ -5,12 +5,17 @@
 package views;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.Barang;
+import dao.BarangDao;
+import org.springframework.dao.DataAccessException;
 
 /**
  *
  * @author Ivan
  */
 public class FormBarang extends javax.swing.JFrame {
+    
+    private final BarangDao barangDao = config.AppContext.getBean(BarangDao.class);
     
     public FormBarang() {
         initComponents();
@@ -20,34 +25,25 @@ public class FormBarang extends javax.swing.JFrame {
 
     // Fungsi untuk menampilkan data dari database MySQL ke JTable
     public void loadData() {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Kode Barang");
-        model.addColumn("Nama Barang");
-        model.addColumn("Harga Beli");
-        model.addColumn("Harga Jual");
-        model.addColumn("Stok");
-        model.addColumn("Stok Min");
-
-        try {
-            java.sql.Connection conn = config.Koneksi.getConnection();
-            java.sql.Statement stm = conn.createStatement();
-            java.sql.ResultSet rs = stm.executeQuery("SELECT * FROM barang");
-            
-            while (rs.next()) {
-                model.addRow(new Object[]{
-                    rs.getString("kode_barang"),
-                    rs.getString("nama_barang"),
-                    rs.getDouble("harga_beli"),
-                    rs.getDouble("harga_jual"),
-                    rs.getInt("stok"),
-                    rs.getInt("stok_min")
-                });
-            }
-            tableBarang.setModel(model);
-        } catch (java.sql.SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal memuat data: " + e.getMessage());
+    DefaultTableModel model = new DefaultTableModel();
+    model.addColumn("Kode Barang");
+    model.addColumn("Nama Barang");
+    model.addColumn("Harga Beli");
+    model.addColumn("Harga Jual");
+    model.addColumn("Stok");
+    model.addColumn("Stok Min");
+    try {
+        for (Barang b : barangDao.findAll()) {
+            model.addRow(new Object[]{
+                b.getKodeBarang(), b.getNamaBarang(), b.getHargaBeli(),
+                b.getHargaJual(), b.getStok(), b.getStokMin()
+            });
         }
+        tableBarang.setModel(model);
+    } catch (DataAccessException e) {
+        JOptionPane.showMessageDialog(this, "Gagal memuat data: " + e.getMostSpecificCause().getMessage());
     }
+}
 
     // Fungsi untuk mengosongkan form input
     private void kosongkanForm() {
@@ -94,7 +90,7 @@ public class FormBarang extends javax.swing.JFrame {
         btnHapus = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Kode Barang");
 
@@ -241,61 +237,55 @@ public class FormBarang extends javax.swing.JFrame {
     }//GEN-LAST:event_txtKodeBarangActionPerformed
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
-    try {
-    java.sql.Connection conn = config.Koneksi.getConnection();
-    String sql = "INSERT INTO barang VALUES (?, ?, ?, ?, ?, ?)";
-    java.sql.PreparedStatement ps = conn.prepareStatement(sql);
-    ps.setString(1, txtKodeBarang.getText());
-    ps.setString(2, txtNamaBarang.getText());
-    ps.setDouble(3, Double.parseDouble(txtHargaBeli.getText()));
-    ps.setDouble(4, Double.parseDouble(txtHargaJual.getText()));
-    ps.setInt(5, Integer.parseInt(txtStok.getText()));
-    ps.setInt(6, Integer.parseInt(txtStokMin.getText()));
-
-    ps.executeUpdate();
+      try {
+    Barang b = new Barang();
+    b.setKodeBarang(txtKodeBarang.getText().trim());
+    b.setNamaBarang(txtNamaBarang.getText().trim());
+    b.setHargaBeli(Double.parseDouble(txtHargaBeli.getText().trim()));
+    b.setHargaJual(Double.parseDouble(txtHargaJual.getText().trim()));
+    b.setStok(Integer.parseInt(txtStok.getText().trim()));
+    b.setStokMin(Integer.parseInt(txtStokMin.getText().trim()));
+    barangDao.insert(b);
     JOptionPane.showMessageDialog(this, "Data Barang Berhasil Disimpan!");
     loadData();
     kosongkanForm();
-} catch (java.sql.SQLException e) {
-    JOptionPane.showMessageDialog(this, "Gagal Simpan: " + e.getMessage());
-}        // TODO add your handling code here:
+} catch (DataAccessException e) {
+    JOptionPane.showMessageDialog(this, "Gagal Simpan: " + e.getMostSpecificCause().getMessage());
+} catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(this, "Harga dan stok harus diisi angka!");
+}
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-try {
-    java.sql.Connection conn = config.Koneksi.getConnection();
-    String sql = "UPDATE barang SET nama_barang=?, harga_beli=?, harga_jual=?, stok=?, stok_min=? WHERE kode_barang=?";
-    java.sql.PreparedStatement ps = conn.prepareStatement(sql);
-    ps.setString(1, txtNamaBarang.getText());
-    ps.setDouble(2, Double.parseDouble(txtHargaBeli.getText()));
-    ps.setDouble(3, Double.parseDouble(txtHargaJual.getText()));
-    ps.setInt(4, Integer.parseInt(txtStok.getText()));
-    ps.setInt(5, Integer.parseInt(txtStokMin.getText()));
-    ps.setString(6, txtKodeBarang.getText());
-
-    ps.executeUpdate();
+        try {
+    Barang b = new Barang();
+    b.setKodeBarang(txtKodeBarang.getText().trim());
+    b.setNamaBarang(txtNamaBarang.getText().trim());
+    b.setHargaBeli(Double.parseDouble(txtHargaBeli.getText().trim()));
+    b.setHargaJual(Double.parseDouble(txtHargaJual.getText().trim()));
+    b.setStok(Integer.parseInt(txtStok.getText().trim()));
+    b.setStokMin(Integer.parseInt(txtStokMin.getText().trim()));
+    barangDao.update(b);
     JOptionPane.showMessageDialog(this, "Data Barang Berhasil Diubah!");
     loadData();
     kosongkanForm();
-} catch (java.sql.SQLException e) {
-    JOptionPane.showMessageDialog(this, "Gagal Edit: " + e.getMessage());
-}        // TODO add your handling code here:
+} catch (DataAccessException e) {
+    JOptionPane.showMessageDialog(this, "Gagal Edit: " + e.getMostSpecificCause().getMessage());
+} catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(this, "Harga dan stok harus diisi angka!");
+}
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
         int confirm = JOptionPane.showConfirmDialog(this, "Yakin ingin menghapus data ini?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
 if (confirm == JOptionPane.YES_OPTION) {
     try {
-        java.sql.Connection conn = config.Koneksi.getConnection();
-        String sql = "DELETE FROM barang WHERE kode_barang=?";
-        java.sql.PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, txtKodeBarang.getText());
-        ps.executeUpdate();
+        barangDao.delete(txtKodeBarang.getText().trim());
         JOptionPane.showMessageDialog(this, "Data Berhasil Dihapus!");
         loadData();
         kosongkanForm();
-    } catch (java.sql.SQLException e) {
-        JOptionPane.showMessageDialog(this, "Gagal Hapus: " + e.getMessage());
+    } catch (DataAccessException e) {
+        JOptionPane.showMessageDialog(this, "Gagal Hapus: " + e.getMostSpecificCause().getMessage());
     }
 }
     }//GEN-LAST:event_btnHapusActionPerformed
