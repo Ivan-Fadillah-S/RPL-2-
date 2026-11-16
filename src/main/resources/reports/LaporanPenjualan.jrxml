@@ -1,0 +1,119 @@
+<!-- Created with Jaspersoft Studio version 7.0.8.final using JasperReports Library version 7.0.8-6f896111  -->
+<jasperReport name="LaporanPenjualan" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="595fcb21-c071-4b81-9881-783b61ac3243">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="koneksi_erp_toko"/>
+	<query language="SQL"><![CDATA[SELECT p.no_faktur_jual, p.tanggal,
+       IFNULL(pl.nama_pelanggan, '-') AS nama_pelanggan,
+       u.nama_lengkap AS kasir,
+       p.total_bayar, p.jumlah_uang, p.kembalian
+FROM penjualan p
+LEFT JOIN pelanggan pl ON p.id_pelanggan = pl.id_pelanggan
+LEFT JOIN users u ON p.id_user = u.id_user
+ORDER BY p.tanggal DESC]]></query>
+	<field name="no_faktur_jual" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="no_faktur_jual"/>
+		<property name="com.jaspersoft.studio.field.label" value="no_faktur_jual"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="penjualan"/>
+	</field>
+	<field name="tanggal" class="java.time.LocalDateTime">
+		<property name="com.jaspersoft.studio.field.name" value="tanggal"/>
+		<property name="com.jaspersoft.studio.field.label" value="tanggal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="penjualan"/>
+	</field>
+	<field name="nama_pelanggan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nama_pelanggan"/>
+		<property name="com.jaspersoft.studio.field.label" value="nama_pelanggan"/>
+	</field>
+	<field name="kasir" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nama_lengkap"/>
+		<property name="com.jaspersoft.studio.field.label" value="kasir"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="users"/>
+	</field>
+	<field name="total_bayar" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="total_bayar"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_bayar"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="penjualan"/>
+	</field>
+	<field name="jumlah_uang" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="jumlah_uang"/>
+		<property name="com.jaspersoft.studio.field.label" value="jumlah_uang"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="penjualan"/>
+	</field>
+	<field name="kembalian" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="kembalian"/>
+		<property name="com.jaspersoft.studio.field.label" value="kembalian"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="penjualan"/>
+	</field>
+	<background splitType="Stretch"/>
+	<title height="79" splitType="Stretch">
+		<element kind="staticText" uuid="c4c0ac13-08a3-4212-b269-4a06539a6a1e" x="216" y="30" width="188" height="30">
+			<text><![CDATA["LAPORAN PENJUALAN"]]></text>
+		</element>
+	</title>
+	<pageHeader height="35" splitType="Stretch"/>
+	<columnHeader height="61" splitType="Stretch">
+		<element kind="staticText" uuid="169fd5b9-5e01-4209-ba6c-a5212e3a8627" x="-10" y="0" width="100" height="30">
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="27fb0d04-12e5-444d-8382-63cf764c3a19"/>
+			<text><![CDATA[no_faktur_jual]]></text>
+		</element>
+		<element kind="staticText" uuid="19e9618b-b25c-4c9a-8ebb-81bca3bf8cb6" x="90" y="0" width="100" height="30">
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="836d807c-5029-4419-82e5-ad89a355a674"/>
+			<text><![CDATA[tanggal]]></text>
+		</element>
+		<element kind="staticText" uuid="d6beef68-675c-4069-a70c-a17c43bab1a9" x="150" y="0" width="100" height="30">
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4c29d26c-35c7-42ae-a75b-0cd149c0c277"/>
+			<text><![CDATA[nama_pelanggan]]></text>
+		</element>
+		<element kind="staticText" uuid="6481d676-c602-4927-af68-4cdb8dbbc17e" x="250" y="0" width="100" height="30">
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b5b1bc09-87b2-41a9-8ab7-1a147ffa8e92"/>
+			<text><![CDATA[kasir]]></text>
+		</element>
+		<element kind="staticText" uuid="b57a9b1b-749b-480e-8bda-5fdb8133a7fe" x="320" y="0" width="100" height="30">
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2058266e-7cf4-4a17-bdb0-d9ef34f802ad"/>
+			<text><![CDATA[total_bayar]]></text>
+		</element>
+		<element kind="staticText" uuid="67f4b125-e490-4bbf-afce-cea763af7ece" x="410" y="0" width="100" height="30">
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ca64ab5a-39cb-4dee-97f9-6b3d2e0559e6"/>
+			<text><![CDATA[jumlah_uang]]></text>
+		</element>
+		<element kind="staticText" uuid="c9bf3e2b-83ff-4d22-9dd4-92a4430966c2" x="500" y="0" width="100" height="30">
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e9b7aa18-757c-480f-8ac3-da47c38265f3"/>
+			<text><![CDATA[kembalian]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<element kind="textField" uuid="40de3425-04fc-47b4-887a-2ab147138d7b" x="-10" y="37" width="100" height="30">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="27fb0d04-12e5-444d-8382-63cf764c3a19"/>
+				<expression><![CDATA[$F{no_faktur_jual}]]></expression>
+			</element>
+			<element kind="textField" uuid="5f18a504-8c97-4322-9aa9-2496e1a79ba7" x="90" y="37" width="100" height="30">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="836d807c-5029-4419-82e5-ad89a355a674"/>
+				<expression><![CDATA[$F{tanggal}]]></expression>
+			</element>
+			<element kind="textField" uuid="7c2889fa-4d86-4c77-b190-31e6ea1bbb41" x="150" y="37" width="100" height="30">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4c29d26c-35c7-42ae-a75b-0cd149c0c277"/>
+				<expression><![CDATA[$F{nama_pelanggan}]]></expression>
+			</element>
+			<element kind="textField" uuid="5e8c536f-c3c3-477e-a523-d0f6c2da9753" x="260" y="37" width="100" height="30">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b5b1bc09-87b2-41a9-8ab7-1a147ffa8e92"/>
+				<expression><![CDATA[$F{kasir}]]></expression>
+			</element>
+			<element kind="textField" uuid="a451006c-c7ac-4b3f-995c-7657109e7990" x="320" y="37" width="100" height="30">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2058266e-7cf4-4a17-bdb0-d9ef34f802ad"/>
+				<expression><![CDATA[$F{total_bayar}]]></expression>
+			</element>
+			<element kind="textField" uuid="48b9d423-dbd8-4908-8e21-e1da6260e312" x="410" y="37" width="100" height="30">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ca64ab5a-39cb-4dee-97f9-6b3d2e0559e6"/>
+				<expression><![CDATA[$F{jumlah_uang}]]></expression>
+			</element>
+			<element kind="textField" uuid="bddae8d2-92ab-4894-973f-7088c8faf1c1" x="500" y="37" width="100" height="30">
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e9b7aa18-757c-480f-8ac3-da47c38265f3"/>
+				<expression><![CDATA[$F{kembalian}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch"/>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="42" splitType="Stretch"/>
+</jasperReport>
