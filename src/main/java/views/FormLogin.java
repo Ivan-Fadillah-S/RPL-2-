@@ -17,6 +17,77 @@ public class FormLogin extends javax.swing.JFrame {
      */
     public FormLogin() {
         initComponents();
+        susunTampilan();
+    }
+
+    // ===== TAMPILAN (tidak mengubah logika login) =====
+    private void susunTampilan() {
+        final java.awt.Color biru = config.Tema.PRIMER;
+        setTitle("Login - ERP Toko");
+        setResizable(false);
+
+        // Panel kiri (branding)
+        javax.swing.JPanel kiri = new javax.swing.JPanel(new java.awt.GridBagLayout()) {
+            @Override protected void paintComponent(java.awt.Graphics g) {
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+                g2.setPaint(new java.awt.GradientPaint(0, 0, config.Tema.PRIMER_GELAP, getWidth(), getHeight(), biru));
+                g2.fillRect(0, 0, getWidth(), getHeight());
+                g2.dispose();
+            }
+        };
+        javax.swing.JLabel merek = new javax.swing.JLabel("ERP Toko");
+        merek.setFont(merek.getFont().deriveFont(java.awt.Font.BOLD, 34f));
+        merek.setForeground(java.awt.Color.WHITE);
+        javax.swing.JLabel tagline = new javax.swing.JLabel("Kelola stok, transaksi, dan laporan toko");
+        tagline.setForeground(new java.awt.Color(0xDBEAFE));
+        java.awt.GridBagConstraints k = new java.awt.GridBagConstraints();
+        k.gridx = 0; k.anchor = java.awt.GridBagConstraints.WEST; k.insets = new java.awt.Insets(0, 36, 6, 36);
+        kiri.add(merek, k);
+        k.insets = new java.awt.Insets(0, 36, 0, 36);
+        kiri.add(tagline, k);
+        kiri.setPreferredSize(new java.awt.Dimension(300, 400));
+
+        // Panel kanan (form)
+        javax.swing.JPanel kanan = new javax.swing.JPanel(new java.awt.GridBagLayout());
+        kanan.setBackground(java.awt.Color.WHITE);
+        jLabel1.setText("Masuk");
+        jLabel1.setFont(jLabel1.getFont().deriveFont(java.awt.Font.BOLD, 26f));
+        jLabel1.setForeground(config.Tema.TEKS);
+        javax.swing.JLabel sub = new javax.swing.JLabel("Silakan login untuk melanjutkan");
+        sub.setForeground(config.Tema.TEKS_REDUP);
+        jLabel2.setText("Username");
+        jLabel3.setText("Password");
+        for (javax.swing.JLabel l : new javax.swing.JLabel[]{jLabel2, jLabel3}) {
+            l.setFont(l.getFont().deriveFont(java.awt.Font.BOLD, 12f));
+            l.setForeground(new java.awt.Color(0x334155));
+        }
+        txtUsername.putClientProperty("JTextField.placeholderText", "Masukkan username");
+        txtPassword.putClientProperty("JTextField.placeholderText", "Masukkan password");
+        txtUsername.setMargin(new java.awt.Insets(7, 10, 7, 10));
+        txtPassword.setMargin(new java.awt.Insets(7, 10, 7, 10));
+        btnLogin.setText("Login");
+        config.Tema.gayaTombol(btnLogin);
+        btnLogin.setMargin(new java.awt.Insets(10, 16, 10, 16));
+
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.gridx = 0; g.fill = java.awt.GridBagConstraints.HORIZONTAL; g.weightx = 1;
+        g.insets = new java.awt.Insets(0, 40, 0, 40);
+        g.gridy = 0; g.insets = new java.awt.Insets(0, 40, 2, 40); kanan.add(jLabel1, g);
+        g.gridy = 1; g.insets = new java.awt.Insets(0, 40, 24, 40); kanan.add(sub, g);
+        g.gridy = 2; g.insets = new java.awt.Insets(0, 40, 4, 40); kanan.add(jLabel2, g);
+        g.gridy = 3; g.insets = new java.awt.Insets(0, 40, 14, 40); kanan.add(txtUsername, g);
+        g.gridy = 4; g.insets = new java.awt.Insets(0, 40, 4, 40); kanan.add(jLabel3, g);
+        g.gridy = 5; g.insets = new java.awt.Insets(0, 40, 22, 40); kanan.add(txtPassword, g);
+        g.gridy = 6; g.insets = new java.awt.Insets(0, 40, 0, 40); kanan.add(btnLogin, g);
+
+        getContentPane().removeAll();
+        getContentPane().setLayout(new java.awt.BorderLayout());
+        getContentPane().add(kiri, java.awt.BorderLayout.WEST);
+        getContentPane().add(kanan, java.awt.BorderLayout.CENTER);
+        getRootPane().setDefaultButton(btnLogin); // tekan Enter = Login
+        pack();
+        setSize(780, 440);
+        setLocationRelativeTo(null);
     }
 
     /**

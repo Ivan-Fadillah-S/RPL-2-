@@ -19,6 +19,7 @@ public class FormBarang extends javax.swing.JFrame {
     
     public FormBarang() {
         initComponents();
+        config.Tema.percantik(this, "Data Barang"); // tampilan
         setLocationRelativeTo(null);
         loadData(); // Memuat data ke tabel saat form dibuka
     }

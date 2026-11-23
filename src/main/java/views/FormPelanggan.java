@@ -24,6 +24,7 @@ public class FormPelanggan extends javax.swing.JFrame {
      */
     public FormPelanggan() {
         initComponents();
+        config.Tema.percantik(this, "Data Pelanggan"); // tampilan
         setLocationRelativeTo(null);
         loadData();
     }

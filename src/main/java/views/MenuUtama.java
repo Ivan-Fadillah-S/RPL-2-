@@ -21,6 +21,29 @@ public class MenuUtama extends javax.swing.JFrame {
         this.idUserAktif = idUser;
         setLocationRelativeTo(null);
         aturHakAkses();
+        pasangTampilan(); // hanya tampilan
+    }
+
+    // ===== TAMPILAN (tidak mengubah logika) =====
+    private void pasangTampilan() {
+        config.Tema.percantik(this, "Menu Utama");
+        jMenu3.setText("Laporan");
+        java.awt.Color biru = new java.awt.Color(0x2563EB), hijau = new java.awt.Color(0x16A34A),
+                ungu = new java.awt.Color(0x7C3AED), oranye = new java.awt.Color(0xEA580C);
+        Beranda b = new Beranda(config.Session.namaLengkap, roleUser,
+            new Beranda.Pintasan("Data Barang", "Kelola stok & harga", jMenuItem1, jMenu1, biru),
+            new Beranda.Pintasan("Data Supplier", "Kelola pemasok", jMenuItem2, jMenu1, biru),
+            new Beranda.Pintasan("Data Pelanggan", "Kelola pelanggan", jMenuItem3, jMenu1, biru),
+            new Beranda.Pintasan("Pembelian", "Catat barang masuk", menuPembelian, jMenu2, hijau),
+            new Beranda.Pintasan("Penjualan", "Kasir & transaksi", menuPenjualan, jMenu2, hijau),
+            new Beranda.Pintasan("Laporan Penjualan", "Rekap penjualan", jMenuItem4, jMenu3, ungu),
+            new Beranda.Pintasan("Laporan Stok", "Pantau persediaan", jMenuItem5, jMenu3, oranye));
+        getContentPane().removeAll();
+        getContentPane().setLayout(new java.awt.BorderLayout());
+        getContentPane().add(b, java.awt.BorderLayout.CENTER);
+        setSize(960, 620);
+        setMinimumSize(new java.awt.Dimension(780, 520));
+        setLocationRelativeTo(null);
     }
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MenuUtama.class.getName());

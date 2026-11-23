@@ -43,61 +43,61 @@ ORDER BY b.kode_barang ASC]]></query>
 	</field>
 	<background splitType="Stretch"/>
 	<title height="84" splitType="Stretch">
-		<element kind="staticText" uuid="69633407-5239-466b-9404-014dc975c043" x="200" y="30" width="160" height="30">
+		<element kind="staticText" uuid="69633407-5239-466b-9404-014dc975c043" x="200" y="27" width="160" height="30" hTextAlign="Center">
 			<text><![CDATA["LAPORAN STOK BARANG"]]></text>
 		</element>
 	</title>
 	<pageHeader height="35" splitType="Stretch"/>
 	<columnHeader height="61" splitType="Stretch">
-		<element kind="staticText" uuid="3f3e3e4b-c021-4a92-ae6e-520cd374b6bf" x="0" y="20" width="100" height="30">
+		<element kind="staticText" uuid="3f3e3e4b-c021-4a92-ae6e-520cd374b6bf" x="10" y="21" width="79" height="30" hTextAlign="Center">
 			<text><![CDATA[KODE]]></text>
 		</element>
-		<element kind="staticText" uuid="dc0d38bf-ffff-4dfd-bf60-aa7cea4eafc3" x="110" y="20" width="100" height="30">
+		<element kind="staticText" uuid="dc0d38bf-ffff-4dfd-bf60-aa7cea4eafc3" x="89" y="21" width="100" height="30" hTextAlign="Center">
 			<text><![CDATA[NAMA]]></text>
 		</element>
-		<element kind="staticText" uuid="fc505744-b3e6-44e7-90fd-c8f09b35a511" x="180" y="20" width="100" height="30">
+		<element kind="staticText" uuid="fc505744-b3e6-44e7-90fd-c8f09b35a511" x="200" y="21" width="90" height="30" hTextAlign="Center">
 			<text><![CDATA[KATEGORI]]></text>
 		</element>
-		<element kind="staticText" uuid="2a777c22-a669-4646-86ff-2e393840e2af" x="270" y="20" width="100" height="30">
+		<element kind="staticText" uuid="2a777c22-a669-4646-86ff-2e393840e2af" x="300" y="21" width="70" height="30" hTextAlign="Center">
 			<text><![CDATA[HARGA]]></text>
 		</element>
-		<element kind="staticText" uuid="40e6a8ba-e890-44dd-a8c6-184aaf020989" x="400" y="20" width="100" height="30">
+		<element kind="staticText" uuid="40e6a8ba-e890-44dd-a8c6-184aaf020989" x="430" y="21" width="60" height="30" hTextAlign="Center">
 			<text><![CDATA[MIN]]></text>
 		</element>
-		<element kind="staticText" uuid="8a544abf-82bd-498e-89be-acecf4c6e724" x="350" y="20" width="100" height="30">
+		<element kind="staticText" uuid="8a544abf-82bd-498e-89be-acecf4c6e724" x="380" y="21" width="40" height="30">
 			<text><![CDATA[STOK]]></text>
 		</element>
-		<element kind="staticText" uuid="3ece694d-0919-4766-b909-1dd59aa5e001" x="460" y="20" width="100" height="30">
+		<element kind="staticText" uuid="3ece694d-0919-4766-b909-1dd59aa5e001" x="500" y="21" width="50" height="30" hTextAlign="Center">
 			<text><![CDATA[STATUS]]></text>
 		</element>
 	</columnHeader>
 	<detail>
 		<band height="68" splitType="Stretch">
-			<element kind="textField" uuid="27205b15-b4f2-4520-9f9c-75e048a4652b" x="-10" y="19" width="100" height="30">
+			<element kind="textField" uuid="27205b15-b4f2-4520-9f9c-75e048a4652b" x="10" y="11" width="79" height="30" hTextAlign="Center">
 				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d2759dd3-7130-4918-a5cf-723c142c5d31"/>
 				<expression><![CDATA[$F{kode_barang}]]></expression>
 			</element>
-			<element kind="textField" uuid="bb2ee300-7775-4918-95a6-0df276983f89" x="80" y="19" width="100" height="30">
+			<element kind="textField" uuid="bb2ee300-7775-4918-95a6-0df276983f89" x="100" y="11" width="90" height="30" hTextAlign="Center">
 				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ddecdb0a-1282-4d58-8c4d-3403f423568d"/>
 				<expression><![CDATA[$F{nama_barang}]]></expression>
 			</element>
-			<element kind="textField" uuid="942702ab-d2ca-43e2-88ba-2eb18b448da5" x="170" y="19" width="100" height="30">
+			<element kind="textField" uuid="942702ab-d2ca-43e2-88ba-2eb18b448da5" x="200" y="11" width="90" height="30" hTextAlign="Center">
 				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="db1d3354-1bed-42bd-9ec7-976021159f91"/>
 				<expression><![CDATA[$F{nama_kategori}]]></expression>
 			</element>
-			<element kind="textField" uuid="5050d347-4a32-4803-9e4f-254912b5c818" x="270" y="19" width="100" height="30">
+			<element kind="textField" uuid="5050d347-4a32-4803-9e4f-254912b5c818" x="300" y="11" width="70" height="30" hTextAlign="Center">
 				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d135e0f8-0ee0-4d08-b6b7-5d19ead7b7c7"/>
 				<expression><![CDATA[$F{harga_jual}]]></expression>
 			</element>
-			<element kind="textField" uuid="225a35b3-52ec-4320-aef3-e7a9cabc38c8" x="350" y="19" width="100" height="30">
+			<element kind="textField" uuid="225a35b3-52ec-4320-aef3-e7a9cabc38c8" x="380" y="11" width="40" height="30" hTextAlign="Center">
 				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d97b9feb-de17-462a-901c-5dfe4130bde6"/>
 				<expression><![CDATA[$F{stok}]]></expression>
 			</element>
-			<element kind="textField" uuid="21fadebd-c99c-4dc3-bb1f-03a86702b9a7" x="400" y="19" width="100" height="30">
+			<element kind="textField" uuid="21fadebd-c99c-4dc3-bb1f-03a86702b9a7" x="430" y="11" width="60" height="30" hTextAlign="Center">
 				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="329b1d77-2100-48e3-be9f-ec5335522d78"/>
 				<expression><![CDATA[$F{stok_min}]]></expression>
 			</element>
-			<element kind="textField" uuid="9526414e-338e-46cb-a9b9-4b08091cd7fe" x="470" y="19" width="100" height="30">
+			<element kind="textField" uuid="9526414e-338e-46cb-a9b9-4b08091cd7fe" x="500" y="11" width="50" height="30">
 				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="22fc19e2-6720-4971-adb7-34717b007631"/>
 				<expression><![CDATA[$F{status}]]></expression>
 			</element>

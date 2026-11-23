@@ -52,5 +52,12 @@
             <artifactId>jasperreports</artifactId>
             <version>7.0.8</version>
         </dependency>
+
+        <!-- FlatLaf: tema tampilan modern (hanya untuk visual) -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.6</version>
+        </dependency>
     </dependencies>
 </project>

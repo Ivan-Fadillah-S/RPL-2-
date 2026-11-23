@@ -11,6 +11,7 @@ package com.erp.erptokomaven;
 public class ERPTokoMaven {
 
     public static void main(String[] args) {
-    java.awt.EventQueue.invokeLater(() -> new views.FormLogin().setVisible(true));
+        config.Tema.pasang(); // pasang tema tampilan
+        java.awt.EventQueue.invokeLater(() -> new views.FormLogin().setVisible(true));
     }
 }

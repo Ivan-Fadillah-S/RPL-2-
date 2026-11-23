@@ -22,6 +22,7 @@ public class FormSupplier extends javax.swing.JFrame {
      */
     public FormSupplier() {
         initComponents();
+        config.Tema.percantik(this, "Data Supplier"); // tampilan
         setLocationRelativeTo(null);
         loadData();
     }

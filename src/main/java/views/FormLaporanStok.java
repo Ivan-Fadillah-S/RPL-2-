@@ -25,6 +25,7 @@ public class FormLaporanStok extends javax.swing.JFrame {
 
     public FormLaporanStok() {
         initComponents();
+        config.Tema.percantik(this, "Laporan Stok"); // tampilan
         setLocationRelativeTo(null);
         loadDataStok();
     }

@@ -23,6 +23,8 @@ public class FormPembelian extends javax.swing.JFrame {
      */
     public FormPembelian() {
         initComponents();
+        config.Tema.percantik(this, "Pembelian"); // tampilan
+        config.Tema.gayaTotal(lblTotalBeli);
         setLocationRelativeTo(null);
         initTabelKeranjang();
     }

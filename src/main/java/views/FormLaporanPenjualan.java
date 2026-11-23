@@ -25,6 +25,7 @@ public class FormLaporanPenjualan extends javax.swing.JFrame {
 
     public FormLaporanPenjualan() {
         initComponents();
+        config.Tema.percantik(this, "Laporan Penjualan"); // tampilan
         setLocationRelativeTo(null);
         loadDataLaporan();
     }
